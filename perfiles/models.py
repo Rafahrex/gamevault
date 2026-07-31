@@ -11,6 +11,13 @@ class UserProfile(models.Model):
     def __str__(self):
         return f'Profile of {self.user.username}'
 
+    @property
+    def achievement_points(self):
+        return sum(
+            user_achievement.achievement.points
+            for user_achievement in self.user.achievements.select_related('achievement')
+        )
+
 
 class GameLibrary(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='game_library')
