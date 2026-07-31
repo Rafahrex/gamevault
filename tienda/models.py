@@ -38,6 +38,9 @@ class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='cart')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def get_total_price(self):
+        return sum(item.get_subtotal() for item in self.items.all())
+
     def __str__(self):
         return f'Cart of {self.user.username}'
 
@@ -46,6 +49,9 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+
+    def get_subtotal(self):
+        return self.game.price * self.quantity
 
     class Meta:
         unique_together = ('cart', 'game')

@@ -1,0 +1,157 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameVault - Store Catalogue</title>
+    <link rel="stylesheet" href="{% static 'tienda/styles.css' %}" />
+  </head>
+  <body>
+    <div class="container">
+      <header
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: #171a21;
+          padding: 15px 20px;
+          margin-bottom: 25px;
+          border-radius: 4px;
+        "
+      >
+        <div style="font-weight: bold; color: #66c0f4; font-size: 18px">
+          <a
+            href="{% url 'catalogo' %}"
+            style="color: #fff; text-decoration: none"
+            >GAMEVAULT</a
+          >
+        </div>
+        <div
+          style="display: flex; gap: 15px; align-items: center; font-size: 13px"
+        >
+          <a
+            href="{% url 'ver_carrito' %}"
+            class="btn-add"
+            style="text-decoration: none"
+            >🛒 Cart</a
+          >
+          {% if user.is_authenticated %}
+          <span style="color: #acdbf5"
+            >Hello, <strong>{{ user.username }}</strong></span
+          >
+          <a
+            href="{% url 'logout' %}"
+            style="color: #cd3d3d; text-decoration: none"
+            >Logout</a
+          >
+          {% else %}
+          <a
+            href="{% url 'login' %}"
+            style="color: #66c0f4; text-decoration: none"
+            >Sign In</a
+          >
+          <a
+            href="{% url 'register' %}"
+            style="color: #c6d4df; text-decoration: none"
+            >Register</a
+          >
+          {% endif %}
+        </div>
+      </header>
+
+      <h1>GameVault</h1>
+
+      <div class="search-bar-container">
+        <form method="GET" action="{% url 'catalogo' %}" class="search-form">
+          <input
+            type="text"
+            name="query"
+            class="search-input"
+            placeholder="Search store..."
+            value="{{ query }}"
+          />
+          <button type="submit" class="btn-search">Search</button>
+          {% if query %}
+          <a href="{% url 'catalogo' %}" class="clear-link">Clear</a>
+          {% endif %}
+        </form>
+      </div>
+
+      <div class="store-layout">
+        <aside class="sidebar">
+          <h3>Narrow by Genre</h3>
+          <ul class="genre-list">
+            {% for g in genres %}
+            <li><a href="?genre={{ g.id }}">{{ g.name }}</a></li>
+            {% empty %}
+            <li>
+              <span style="font-size: 12px; color: #555"
+                >No genres available</span
+              >
+            </li>
+            {% endfor %}
+          </ul>
+        </aside>
+
+        <main class="games-grid">
+          {% for game in games %}
+          <div class="game-card">
+            {% if game.cover_image %}
+            <img
+              src="{{ game.cover_image }}"
+              alt="{{ game.title }}"
+              class="game-cover"
+            />
+            {% else %}
+            <div
+              style="
+                height: 150px;
+                background: #0e141d;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #384959;
+              "
+            >
+              No Image
+            </div>
+            {% endif %}
+
+            <div class="game-info">
+              <h2 class="game-title">{{ game.title }}</h2>
+              {% if game.genre %}
+              <span class="game-genre">{{ game.genre.name }}</span>
+              {% endif %}
+            </div>
+
+            <div class="card-footer">
+              <span class="price-tag">${{ game.price }}</span>
+              {% if game.stock > 0 %}
+              <a href="{% url 'agregar_al_carrito' game.id %}" class="btn-add"
+                >Add to Cart</a
+              >
+              {% else %}
+              <span class="out-of-stock">Out of Stock</span>
+              {% endif %}
+            </div>
+          </div>
+          {% empty %}
+          <div
+            style="
+              grid-column: 1 / -1;
+              padding: 40px;
+              text-align: center;
+              background: #121923;
+            "
+          >
+            <p style="font-size: 16px; color: #8f98a0">
+              No games found matching your search criteria.
+            </p>
+          </div>
+          {% endfor %}
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

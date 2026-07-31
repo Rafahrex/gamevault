@@ -1,0 +1,230 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Motiva Sans", Arial, Helvetica, sans-serif;
+  background: #1b2838;
+  color: #c6d4df;
+  padding: 30px 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 26px;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #2a475e;
+  padding-bottom: 10px;
+}
+
+.search-bar-container {
+  background: linear-gradient(
+    90deg,
+    rgba(42, 71, 94, 1) 0%,
+    rgba(23, 38, 54, 1) 100%
+  );
+
+  padding: 16px 20px;
+  border-radius: 4px;
+  margin-bottom: 25px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: auto;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-input {
+  width: 100%;
+  background-color: #0e141d;
+  border: 1px solid #000;
+  border-radius: 2px;
+  color: #fff;
+  padding: 10px 14px;
+  font-size: 14px;
+  outline: none;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
+}
+
+.search-input:focus {
+  border-color: #66c0f4;
+}
+
+.btn-search {
+  background: linear-gradient(90deg, #47bfff 0%, #1a9fff 100%);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 2px;
+  cursor: pointer;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s;
+}
+
+.btn-search:hover {
+  background: linear-gradient(90deg, #66c0f4 0%, #2083d5 100%);
+}
+
+.clear-link {
+  color: #66c0f4;
+  font-size: 13px;
+  text-decoration: none;
+  align-self: center;
+}
+
+.clear-link:hover {
+  text-decoration: underline;
+}
+
+/* Store Grid Layout */
+.store-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 25px;
+}
+
+/* Sidebar Filters */
+.sidebar {
+  background-color: #121923;
+  padding: 15px;
+  border-radius: 4px;
+  height: fit-content;
+}
+
+.sidebar h3 {
+  font-size: 14px;
+  color: #66c0f4;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.genre-list {
+  list-style: none;
+}
+
+.genre-list li a {
+  display: block;
+  color: #8f98a0;
+  text-decoration: none;
+  padding: 6px 0;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+
+.genre-list li a:hover {
+  color: #ffffff;
+}
+
+/* Games Grid */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* Steam Game Card */
+.game-card {
+  background: #16202d;
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.game-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+  background: #202d3d;
+}
+
+.game-cover {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-bottom: 1px solid #101822;
+}
+
+.game-info {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.game-title {
+  font-size: 16px;
+  color: #ffffff;
+  margin-bottom: 6px;
+  font-weight: normal;
+}
+
+.game-genre {
+  font-size: 11px;
+  color: #384959;
+  background: #0e141d;
+  padding: 2px 6px;
+  border-radius: 2px;
+  width: fit-content;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.card-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0a0f16;
+  padding: 10px 14px;
+}
+
+.price-tag {
+  color: #acdbf5;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.btn-add {
+  background: #4c6b22;
+  background: linear-gradient(90deg, #75b022 0%, #588a1b 100%);
+  color: #d2efa9;
+  padding: 6px 12px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 2px;
+  transition: filter 0.2s;
+}
+
+.btn-add:hover {
+  filter: brightness(1.2);
+}
+
+.out-of-stock {
+  color: #cd3d3d;
+  font-size: 12px;
+  font-weight: bold;
+}
