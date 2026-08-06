@@ -1,0 +1,11 @@
+{% extends 'perfiles/base.html' %}
+{% block title %}{{ profile_user.username }} - GameVault{% endblock %}
+{% block content %}
+  <section class="profile-hero">
+    {% if profile.avatar %}<img class="avatar" src="{{ profile.avatar }}" alt="Avatar de {{ profile_user.username }}">{% else %}<div class="avatar placeholder">{{ profile_user.username|first|upper }}</div>{% endif %}
+    <div><h1>{{ profile_user.username }}</h1><p>{{ profile.bio|default:'Este usuario todavía no agregó una biografía.' }}</p></div>
+  </section>
+  <h2>Biblioteca</h2><div class="card-grid">{% for item in library %}<a class="content-card" href="{% url 'perfiles:game_detail' item.game.id %}"><strong>{{ item.game.title }}</strong><small>Adquirido {{ item.acquired_at|date:'d/m/Y' }}</small></a>{% empty %}<p class="empty">No hay juegos adquiridos.</p>{% endfor %}</div>
+  <h2>Logros y badges</h2><div class="card-grid">{% for item in achievements %}<div class="content-card achievement">{% if item.achievement.icon %}<img src="{{ item.achievement.icon }}" alt="">{% endif %}<strong>{{ item.achievement.name }}</strong><span>{{ item.achievement.description }}</span><small>{{ item.achievement.points }} puntos</small></div>{% empty %}<p class="empty">Todavía no tiene logros.</p>{% endfor %}</div>
+  <h2>Reseñas</h2><div class="stack">{% for review in reviews %}<article class="review"><a href="{% url 'perfiles:game_detail' review.game.id %}">{{ review.game.title }}</a><strong>{{ review.rating }}/10</strong><p>{{ review.comment }}</p></article>{% empty %}<p class="empty">Todavía no publicó reseñas.</p>{% endfor %}</div>
+{% endblock %}
