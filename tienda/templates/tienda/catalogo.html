@@ -1,4 +1,21 @@
-{% load static %}
+{% load static %} {% if messages %}
+<div class="messages-container">
+  {% for message in messages %}
+  <div
+    class="alert alert-{{ message.tags }}"
+    style="
+      padding: 12px;
+      background: #2a475e;
+      color: #66c0f4;
+      margin-bottom: 15px;
+      border-radius: 4px;
+    "
+  >
+    {{ message }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
 <!doctype html>
 <html lang="es">
   <head>
@@ -34,9 +51,14 @@
             href="{% url 'ver_carrito' %}"
             class="btn-add"
             style="text-decoration: none"
-            >🛒 Cart</a
+            >Cart</a
           >
           {% if user.is_authenticated %}
+          <a
+            href="{% url 'historial_transacciones' %}"
+            style="color: #66c0f4; text-decoration: none"
+            >History</a
+          >
           <span style="color: #acdbf5"
             >Hello, <strong>{{ user.username }}</strong></span
           >

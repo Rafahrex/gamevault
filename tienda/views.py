@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Game, Genre, Cart, CartItem
+from .models import Game, Genre, Cart, CartItem, Order, OrderItem
+
+from perfiles.models import GameLibrary
 
 def catalogue(request):
     games = Game.objects.all()
@@ -68,6 +71,54 @@ def remove_from_cart(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, cart=cart)
     item.delete()
     return redirect('ver_carrito')
+
+@login_required(login_url='login')
+def checkout(request):
+    cart = _get_cart(request)
+    items = cart.items.all()
+
+    if not items.exists():
+        messages.warning(request, "Tu carrito está vacío.")
+        return redirect('ver_carrito')
+
+    total_spent = sum(item.get_subtotal() for item in items)
+
+    
+    order = Order.objects.create(
+        user=request.user, 
+        total=total_spent,
+        status='confirmed'  
+    )
+
+    purchased_games = []
+    for item in items:
+        price_to_charge = item.game.get_final_price() if hasattr(item.game, 'get_final_price') else item.game.price
+
+        OrderItem.objects.create(
+            order=order,
+            game=item.game,
+            quantity=item.quantity,
+            unit_price=price_to_charge
+        )
+
+        GameLibrary.objects.get_or_create(user=request.user, game=item.game)
+
+        if item.game.stock >= item.quantity:
+            item.game.stock -= item.quantity
+            item.game.save()
+
+        purchased_games.append(item.game)
+
+    cart.items.all().delete()
+
+    messages.success(request, "¡Compra realizada con éxito! El juego se agregó a tu librería.")
+    return redirect('catalogo')
+
+
+@login_required(login_url='login')
+def transsactions(request):
+    orders = Order.objects.filter(user=request.user).prefetch_related('items__game')
+    return render(request, 'tienda/historial.html', {'orders': orders})
 
 
 

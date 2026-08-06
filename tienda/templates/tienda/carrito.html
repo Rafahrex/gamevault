@@ -101,7 +101,9 @@
           <span style="font-size: 18px; margin-right: 20px"
             >Total: <strong style="color: #acdbf5">${{ total }}</strong></span
           >
-          <a href="#" class="btn-checkout">Purchase for myself</a>
+          <a href="{% url 'procesar_checkout' %}" class="btn-checkout"
+            >Purchase for myself</a
+          >
         </div>
       </div>
       {% else %}
