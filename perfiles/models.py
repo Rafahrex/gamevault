@@ -11,6 +11,17 @@ class UserProfile(models.Model):
     def __str__(self):
         return f'Profile of {self.user.username}'
 
+    def library_size(self):
+        """Return the number of games acquired by the profile owner."""
+        return self.user.game_library.count()
+
+    def achievement_points(self):
+        """Calculate the points earned through the user's achievements."""
+        return sum(
+            item.achievement.points
+            for item in self.user.achievements.select_related('achievement')
+        )
+
 
 class GameLibrary(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='game_library')
@@ -36,6 +47,14 @@ class Wishlist(models.Model):
     def __str__(self):
         return f'{self.user.username} wants {self.game.title}'
 
+    @classmethod
+    def toggle(cls, user, game):
+        """Add or remove a game and return True when it was added."""
+        item, created = cls.objects.get_or_create(user=user, game=game)
+        if not created:
+            item.delete()
+        return created
+
 
 class Achievement(models.Model):
     name = models.CharField(max_length=100)
@@ -48,6 +67,10 @@ class Achievement(models.Model):
 
     def __str__(self):
         return self.name
+
+    def award_to(self, user):
+        """Award this achievement once and return the assignment created."""
+        return UserAchievement.objects.get_or_create(user=user, achievement=self)
 
 
 class UserAchievement(models.Model):

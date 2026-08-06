@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'gamevault',
         'USER': 'postgres',
-        'PASSWORD': 'Miloperro300517*',
+        'PASSWORD': 'LeoMessi10',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -124,3 +124,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Authentication routes provided by the existing tienda application.
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'perfiles:dashboard'

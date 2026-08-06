@@ -141,7 +141,13 @@
             {% endif %}
 
             <div class="game-info">
-              <h2 class="game-title">{{ game.title }}</h2>
+              <h2 class="game-title">
+                <a
+                  href="{% url 'perfiles:game_detail' game.id %}"
+                  style="color: inherit; text-decoration: none"
+                  >{{ game.title }}</a
+                >
+              </h2>
               {% if game.genre %}
               <span class="game-genre">{{ game.genre.name }}</span>
               {% endif %}
