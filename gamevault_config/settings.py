@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'gamevault',
         'USER': 'postgres',
-        'PASSWORD': 'LeoMessi10',
+        'PASSWORD': 'Miloperro300517*',
         'HOST': 'localhost',
         'PORT': '5432',
     }

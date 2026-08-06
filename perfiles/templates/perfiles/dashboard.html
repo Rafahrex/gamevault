@@ -1,16 +1,45 @@
 {% extends 'perfiles/base.html' %}
+
 {% block title %}Mi perfil - GameVault{% endblock %}
+
 {% block content %}
-  <section class="profile-hero">
-    {% if profile.avatar %}<img class="avatar" src="{{ profile.avatar }}" alt="Avatar de {{ user.username }}">{% else %}<div class="avatar placeholder">{{ user.username|first|upper }}</div>{% endif %}
-    <div><h1>{{ user.username }}</h1><p>{{ profile.bio|default:'Aún no has escrito una biografía.' }}</p>
-      <div class="actions"><a class="button" href="{% url 'perfiles:profile' user.username %}">Ver perfil público</a><a class="button secondary" href="{% url 'perfiles:edit_profile' %}">Editar perfil</a></div>
+<section class="profile-hero">
+  {% if profile.avatar %}
+    <img
+      class="avatar"
+      src="{{ profile.avatar }}"
+      alt="Avatar de {{ user.username }}"
+    />
+  {% else %}
+    <div class="avatar placeholder">{{ user.username|first|upper }}</div>
+  {% endif %}
+
+  <div>
+    <h1>{{ user.username }}</h1>
+    <p>{{ profile.bio|default:'No bio written yet.' }}</p>
+    <div class="actions">
+      <a class="button" href="{% url 'perfiles:profile' user.username %}">Public profile</a>
+      <a class="button secondary" href="{% url 'perfiles:edit_profile' %}">Edit profile</a>
     </div>
-  </section>
-  <section class="stats-grid">
-    <a class="stat" href="{% url 'perfiles:library' %}"><strong>{{ library_count }}</strong><span>Juegos adquiridos</span></a>
-    <a class="stat" href="{% url 'perfiles:wishlist' %}"><strong>{{ wishlist_count }}</strong><span>En wishlist</span></a>
-    <div class="stat"><strong>{{ achievement_count }}</strong><span>Logros</span></div>
-    <div class="stat"><strong>{{ achievement_points }}</strong><span>Puntos de logros</span></div>
-  </section>
+  </div>
+</section>
+
+<section class="stats-grid">
+  <a class="stat" href="{% url 'perfiles:library' %}">
+    <strong>{{ library_count }}</strong>
+    <span>Acquired games</span>
+  </a>
+  <a class="stat" href="{% url 'perfiles:wishlist' %}">
+    <strong>{{ wishlist_count }}</strong>
+    <span>Wishlist games</span>
+  </a>
+  <div class="stat">
+    <strong>{{ achievement_count }}</strong>
+    <span>Achievements</span>
+  </div>
+  <div class="stat">
+    <strong>{{ achievement_points }}</strong>
+    <span>Achievement points</span>
+  </div>
+</section>
 {% endblock %}

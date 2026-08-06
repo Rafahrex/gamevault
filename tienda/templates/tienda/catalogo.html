@@ -17,7 +17,7 @@
 </div>
 {% endif %}
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -59,9 +59,13 @@
             style="color: #66c0f4; text-decoration: none"
             >History</a
           >
-          <span style="color: #acdbf5"
-            >Hello, <strong>{{ user.username }}</strong></span
+          <a
+            href="{% url 'perfiles:dashboard' %}"
+            style="color: #acdbf5; text-decoration: none"
           >
+            Hello, <strong>{{ user.username }}</strong>
+          </a>
+
           <a
             href="{% url 'logout' %}"
             style="color: #cd3d3d; text-decoration: none"
@@ -120,24 +124,31 @@
           {% for game in games %}
           <div class="game-card">
             {% if game.cover_image %}
-            <img
-              src="{{ game.cover_image }}"
-              alt="{{ game.title }}"
-              class="game-cover"
-            />
+            <a href="{% url 'perfiles:game_detail' game.id %}">
+              <img
+                src="{{ game.cover_image }}"
+                alt="{{ game.title }}"
+                class="game-cover"
+              />
+            </a>
             {% else %}
-            <div
-              style="
-                height: 150px;
-                background: #0e141d;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #384959;
-              "
+            <a
+              href="{% url 'perfiles:game_detail' game.id %}"
+              style="text-decoration: none"
             >
-              No Image
-            </div>
+              <div
+                style="
+                  height: 150px;
+                  background: #0e141d;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: #384959;
+                "
+              >
+                No Image
+              </div>
+            </a>
             {% endif %}
 
             <div class="game-info">
@@ -153,15 +164,37 @@
               {% endif %}
             </div>
 
-            <div class="card-footer">
+            <div
+              class="card-footer"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 8px;
+              "
+            >
               <span class="price-tag">${{ game.price }}</span>
-              {% if game.stock > 0 %}
-              <a href="{% url 'agregar_al_carrito' game.id %}" class="btn-add"
-                >Add to Cart</a
-              >
-              {% else %}
-              <span class="out-of-stock">Out of Stock</span>
-              {% endif %}
+              <div style="display: flex; gap: 6px; align-items: center">
+                <a
+                  href="{% url 'perfiles:game_detail' game.id %}"
+                  style="
+                    color: #66c0f4;
+                    text-decoration: none;
+                    font-size: 12px;
+                    padding: 6px 10px;
+                    background: #212c3d;
+                    border-radius: 2px;
+                  "
+                  >Reviews</a
+                >
+                {% if game.stock > 0 %}
+                <a href="{% url 'agregar_al_carrito' game.id %}" class="btn-add"
+                  >Add to Cart</a
+                >
+                {% else %}
+                <span class="out-of-stock">Out of Stock</span>
+                {% endif %}
+              </div>
             </div>
           </div>
           {% empty %}

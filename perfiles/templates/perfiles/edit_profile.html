@@ -1,3 +1,16 @@
 {% extends 'perfiles/base.html' %}
-{% block title %}Editar perfil - GameVault{% endblock %}
-{% block content %}<div class="form-panel"><h1>Editar perfil</h1><form method="post">{% csrf_token %}{{ form.as_p }}<button class="button" type="submit">Guardar cambios</button></form></div>{% endblock %}
+
+{% block title %}Edit Profile - GameVault{% endblock %}
+
+{% block content %}
+<div class="form-panel">
+  <h1>Edit Profile</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="button" type="submit">
+      Save changes
+    </button>
+  </form>
+</div>
+{% endblock %}

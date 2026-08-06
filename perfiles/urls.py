@@ -5,7 +5,7 @@ from . import views
 app_name = "perfiles"
 
 urlpatterns = [
-    path("", views.dashboard, name="dashboard"),
+    path("dashboard/", views.dashboard, name="dashboard"),
     path("editar/", views.edit_profile, name="edit_profile"),
     path("biblioteca/", views.library, name="library"),
     path("wishlist/", views.wishlist, name="wishlist"),

@@ -1,3 +1,30 @@
 {% extends 'perfiles/base.html' %}
-{% block title %}Reseña de {{ game.title }}{% endblock %}
-{% block content %}<div class="form-panel"><h1>Reseña de {{ game.title }}</h1><form method="post">{% csrf_token %}{{ form.as_p }}<button class="button" type="submit">Guardar reseña</button></form>{% if form.instance.pk %}<form method="post" action="{% url 'perfiles:delete_review' game.id %}" class="delete-form">{% csrf_token %}<button class="danger-link" type="submit">Eliminar reseña</button></form>{% endif %}</div>{% endblock %}
+
+{% block title %}Review for {{ game.title }} - GameVault{% endblock %}
+
+{% block content %}
+<div class="form-panel">
+  <h1>Review for {{ game.title }}</h1>
+  
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="button" type="submit">
+      Save review
+    </button>
+  </form>
+
+  {% if form.instance.pk %}
+    <form
+      method="post"
+      action="{% url 'perfiles:delete_review' game.id %}"
+      class="delete-form"
+    >
+      {% csrf_token %}
+      <button class="danger-link" type="submit">
+        Delete review
+      </button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}
