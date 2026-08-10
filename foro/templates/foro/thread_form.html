@@ -1,0 +1,42 @@
+{% extends 'perfiles/base.html' %}
+{% block title %}Nuevo hilo - Foro{% endblock %}
+{% block content %}
+<h1>Crear hilo de discusión</h1>
+
+<div style="background:#16202d; padding:18px; border-radius:4px;">
+  <form method="post">
+    {% csrf_token %}
+    <label for="game" style="display:block; margin-bottom:4px; color:#8f98a0;">Juego</label>
+    <select
+      name="game"
+      id="game"
+      required
+      style="width:100%; background:#0e141d; color:#acdbf5; border:1px solid #2a475e; padding:8px; border-radius:2px; margin-bottom:10px;"
+    >
+      <option value="">— Selecciona un juego —</option>
+      {% for game in games %}
+      <option value="{{ game.id }}">{{ game.title }}</option>
+      {% endfor %}
+    </select>
+    <label for="title" style="display:block; margin-bottom:4px; color:#8f98a0;">Título</label>
+    <input
+      type="text"
+      name="title"
+      id="title"
+      required
+      maxlength="200"
+      placeholder="Título del hilo"
+      style="width:100%; background:#0e141d; color:#c6d4df; border:1px solid #2a475e; padding:8px; border-radius:2px; margin-bottom:10px;"
+    >
+    <label for="content" style="display:block; margin-bottom:4px; color:#8f98a0;">Contenido</label>
+    <textarea
+      name="content"
+      id="content"
+      required
+      placeholder="Escribe la descripción del hilo..."
+      style="width:100%; background:#0e141d; color:#c6d4df; border:1px solid #2a475e; padding:10px; border-radius:2px; min-height:90px; margin-bottom:10px;"
+    ></textarea>
+    <button type="submit" class="button">Publicar</button>
+  </form>
+</div>
+{% endblock %}

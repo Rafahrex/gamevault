@@ -1,0 +1,50 @@
+<div style="background:#16202d; padding:14px; border-radius:4px; margin-bottom:10px; border-left:3px solid #2a475e;">
+  <p style="color:#8f98a0; font-size:12px; margin:0 0 6px;">
+    {{ comment.user.username }} · {{ comment.created_at|date:"d M Y H:i" }}
+    · Puntaje: {{ comment.score }}
+  </p>
+  <p style="margin:0 0 10px;">{{ comment.content|linebreaksbr }}</p>
+
+  <div style="display:flex; gap:14px; align-items:center; font-size:12px;">
+    {% if user.is_authenticated and user != comment.user %}
+    <form method="post" action="{% url 'foro:toggle_vote' comment.id %}" class="inline-form">
+      {% csrf_token %}
+      <input type="hidden" name="vote_type" value="upvote">
+      <button type="submit" style="background:none; border:none; color:#75b022; cursor:pointer; padding:0;">▲ Up</button>
+    </form>
+    <form method="post" action="{% url 'foro:toggle_vote' comment.id %}" class="inline-form">
+      {% csrf_token %}
+      <input type="hidden" name="vote_type" value="downvote">
+      <button type="submit" style="background:none; border:none; color:#cd3d3d; cursor:pointer; padding:0;">▼ Down</button>
+    </form>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <button type="button"
+      onclick="var e=document.getElementById('reply-{{ comment.id }}'); e.style.display = e.style.display === 'none' ? 'block' : 'none';"
+      style="background:none; border:none; color:#66c0f4; cursor:pointer; padding:0;">Responder</button>
+    {% endif %}
+
+    {% if user.is_authenticated and user == comment.user or user.is_staff or user == thread.user %}
+    <form method="post" action="{% url 'foro:delete_comment' comment.id %}" class="inline-form">
+      {% csrf_token %}
+      <button type="submit" style="background:none; border:none; color:#cd3d3d; cursor:pointer; padding:0;">Eliminar</button>
+    </form>
+    {% endif %}
+  </div>
+
+  {% if user.is_authenticated %}
+  <div id="reply-{{ comment.id }}" style="display:none; margin-top:10px;">
+    <form method="post" action="{% url 'foro:thread_detail' comment.thread_id %}">
+      {% csrf_token %}
+      <input type="hidden" name="parent_id" value="{{ comment.id }}">
+      <textarea name="content" placeholder="Tu respuesta..." style="width:100%; background:#0e141d; color:#c6d4df; border:1px solid #2a475e; padding:8px; border-radius:2px; min-height:50px;"></textarea>
+      <button type="submit" class="button" style="margin-top:6px;">Responder</button>
+    </form>
+  </div>
+  {% endif %}
+
+  {% for reply in comment.replies.all %}
+    {% include 'foro/_comment.html' with comment=reply %}
+  {% endfor %}
+</div>

@@ -130,6 +130,17 @@
         <div class="header-nav">
           <a href="{% url 'catalogo' %}">Store</a>
           <a href="{% url 'ver_carrito' %}">Cart</a>
+          <a href="{% url 'foro:thread_list' %}">Foro</a>
+          <a href="{% url 'recomendaciones:recomendaciones_page' %}">Recomendaciones</a>
+          <a href="{% url 'foro:notifications' %}" title="Notificaciones" style="position: relative; display: inline-flex; color: #66c0f4; text-decoration: none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            {% if unread_notifications %}
+            <span style="position: absolute; top: -6px; right: -8px; background: #cd3d3d; color: #fff; border-radius: 8px; font-size: 10px; line-height: 1; padding: 2px 5px;">{{ unread_notifications }}</span>
+            {% endif %}
+          </a>
           <span style="color: #8f98a0; margin-left: 15px; font-size: 14px"
             >{{ user.username }}</span
           >

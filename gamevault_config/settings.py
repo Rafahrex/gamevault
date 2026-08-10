@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'foro.context_processors.unread_notifications',
             ],
         },
     },
@@ -82,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'gamevault',
         'USER': 'postgres',
-        'PASSWORD': 'Miloperro300517*',
+        'PASSWORD': 'rafa20111',
         'HOST': 'localhost',
         'PORT': '5432',
     }

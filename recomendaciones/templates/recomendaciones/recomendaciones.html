@@ -1,0 +1,88 @@
+{% extends 'perfiles/base.html' %}
+{% block title %}Recomendaciones - GameVault{% endblock %}
+{% block content %}
+<h1>Recomendaciones para ti</h1>
+
+{% if not user_authenticated %}
+  <div style="background:#16202d; padding:20px; border-radius:4px;">
+    <p style="color:#8f98a0;">
+      Inicia sesión para personalizar tus gustos y ver recomendaciones a tu medida.
+    </p>
+    <a href="{% url 'login' %}" class="button">Iniciar sesión</a>
+  </div>
+{% else %}
+  <div style="background:#16202d; padding:20px; border-radius:4px; margin-bottom:20px;">
+    <h2 style="margin:0 0 4px; font-size:16px; color:#acdbf5;">Tus preferencias</h2>
+    <p style="color:#8f98a0; font-size:12px; margin:0 0 14px;">
+      Elige tus géneros favoritos y un precio máximo. El pipeline funcional
+      (filter &rarr; map &rarr; sorted &rarr; top-N) usa estos datos para
+      recomendar juegos.
+    </p>
+    <form method="post" action="{% url 'recomendaciones:update_preferences' %}">
+      {% csrf_token %}
+      <div style="margin-bottom:14px;">
+        <span style="display:block; color:#8f98a0; margin-bottom:6px; font-size:13px;">
+          Géneros favoritos
+        </span>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          {% for genre in form.favorite_genres %}
+          <label style="display:inline-flex; align-items:center; gap:6px; background:#0e141d; border:1px solid #2a475e; color:#acdbf5; padding:6px 10px; border-radius:2px; font-size:13px; cursor:pointer;">
+            {{ genre.tag }} {{ genre.choice_label }}
+          </label>
+          {% endfor %}
+        </div>
+        {% if form.favorite_genres.errors %}
+        <div style="color:#cd3d3d; font-size:12px; margin-top:4px;">
+          {{ form.favorite_genres.errors }}
+        </div>
+        {% endif %}
+      </div>
+      <div style="margin-bottom:14px;">
+        <label for="{{ form.max_price.id_for_label }}" style="display:block; color:#8f98a0; margin-bottom:6px; font-size:13px;">
+          Precio máximo (USD) — déjalo vacío si no importa
+        </label>
+        {{ form.max_price }}
+        {% if form.max_price.errors %}
+        <div style="color:#cd3d3d; font-size:12px; margin-top:4px;">
+          {{ form.max_price.errors }}
+        </div>
+        {% endif %}
+      </div>
+      <button type="submit" class="button">Guardar preferencias</button>
+    </form>
+  </div>
+
+  {% if not recomendaciones %}
+  <div style="background:#16202d; padding:20px; border-radius:4px;">
+    <p style="color:#8f98a0;">
+      No hay recomendaciones para tus preferencias actuales. Marca al menos un
+      género favorito arriba (o revisa el precio máximo) y guarda los cambios.
+    </p>
+  </div>
+  {% else %}
+  <p style="color:#8f98a0; font-size:13px;">
+    {{ total }} juego(s) recomendado(s) según tus géneros favoritos, ordenados
+    por afinidad calculada con el pipeline funcional (filter &rarr; map &rarr;
+    sorted &rarr; top-N).
+  </p>
+  <div style="display:flex; flex-wrap:wrap; gap:16px;">
+    {% for game, score in recomendaciones %}
+    <div style="flex:1 1 260px; background:#16202d; padding:16px; border-radius:4px;">
+      <h3 style="margin:0 0 6px;">
+        <a href="{% url 'perfiles:game_detail' game.id %}" style="color:#66c0f4; text-decoration:none;">
+          {{ game.title }}
+        </a>
+      </h3>
+      <p style="color:#8f98a0; font-size:12px; margin:0 0 8px;">
+        {{ game.genre.name }} · ${{ game.price }} · Calificación {{ game.rating }}
+      </p>
+      <p style="font-size:13px;">{{ game.description|truncatechars:160 }}</p>
+      <span style="background:#66c0f4; color:#0e141d; padding:2px 8px; border-radius:2px; font-size:12px;">
+        Afinidad: {% widthratio score 1 100 %}%
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endif %}
+{% endblock %}
