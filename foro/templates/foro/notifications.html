@@ -1,0 +1,25 @@
+{% extends 'perfiles/base.html' %}
+{% block title %}Notificaciones - GameVault{% endblock %}
+{% block content %}
+<h1>Notificaciones</h1>
+
+{% if notifications %}
+  {% for notification in notifications %}
+  <div style="background:#16202d; padding:14px; border-radius:4px; margin-bottom:10px; {% if not notification.is_read %}border-left:3px solid #66c0f4;{% endif %}">
+    <p style="margin:0 0 4px;">
+      {{ notification.message }}
+      {% if notification.comment %}
+      <a href="{% url 'foro:thread_detail' notification.comment.thread_id %}" style="color:#66c0f4; font-size:12px;">Ver contexto</a>
+      {% endif %}
+    </p>
+    <p style="color:#8f98a0; font-size:12px; margin:0;">
+      {{ notification.created_at|date:"d M Y H:i" }}
+    </p>
+  </div>
+  {% endfor %}
+{% else %}
+  <div style="background:#16202d; padding:20px; border-radius:4px;">
+    <p style="color:#8f98a0;">No tienes notificaciones.</p>
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,32 @@
+.gv-header { display:flex; justify-content:space-between; align-items:center; gap:20px; background:#171a21; padding:15px 20px; margin-bottom:25px; border-radius:4px; }
+.gv-header .brand { color:#fff; font-weight:bold; font-size:18px; text-decoration:none; }
+.gv-header nav { display:flex; flex-wrap:wrap; gap:16px; }
+.gv-header nav a, a { color:#66c0f4; text-decoration:none; }
+.profile-hero, .game-detail { display:flex; gap:28px; align-items:center; background:linear-gradient(120deg,#16202d,#2a475e); padding:28px; margin-bottom:28px; border-radius:4px; }
+.profile-hero h1, .game-detail h1 { border:0; margin-bottom:8px; }
+.avatar { width:128px; height:128px; border-radius:50%; object-fit:cover; border:3px solid #66c0f4; flex:none; }
+.avatar.placeholder { display:grid; place-items:center; background:#0e141d; color:#66c0f4; font-size:52px; }
+.stats-grid, .card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin:18px 0 32px; }
+.stat, .content-card, .review, .form-panel { background:#16202d; border-radius:4px; padding:20px; }
+.stat { display:flex; flex-direction:column; text-align:center; }
+.stat strong { color:#fff; font-size:32px; }
+.stat span, .muted, small, .empty { color:#8f98a0; }
+.content-card { display:flex; flex-direction:column; gap:8px; }
+.game-entry { flex-direction:row; }
+.game-entry img { width:120px; height:80px; object-fit:cover; }
+.achievement img { width:48px; height:48px; object-fit:contain; }
+.stack { display:grid; gap:12px; margin:16px 0 32px; }
+.review strong { float:right; color:#acdbf5; }
+.review p { margin-top:10px; }
+.button { display:inline-block; border:0; cursor:pointer; background:linear-gradient(90deg,#75b022,#588a1b); color:#e5f3d4; padding:10px 16px; border-radius:2px; font-weight:bold; }
+.button.secondary { background:linear-gradient(90deg,#47bfff,#1a9fff); color:#fff; }
+.actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+.form-panel { max-width:620px; margin:30px auto; }
+.form-panel label { display:block; color:#66c0f4; margin:14px 0 6px; }
+.form-panel input, .form-panel textarea { width:100%; padding:11px; color:#fff; background:#0e141d; border:1px solid #2a475e; }
+.errorlist { color:#ff7676; margin:8px 0 8px 20px; }
+.danger-link { color:#ff7676; background:none; border:0; padding:0; cursor:pointer; }
+.delete-form { margin-top:20px; }
+.message { padding:12px 16px; background:#2a475e; border-left:4px solid #66c0f4; margin-bottom:20px; }
+.game-detail > img { width:min(360px,40%); max-height:230px; object-fit:cover; }
+@media (max-width:650px) { .gv-header,.profile-hero,.game-detail { align-items:flex-start; flex-direction:column; } .game-detail > img { width:100%; } }

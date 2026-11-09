@@ -1,0 +1,28 @@
+{% extends 'perfiles/base.html' %}
+
+{% block title %}Mi biblioteca - GameVault{% endblock %}
+
+{% block content %}
+<h1>Library</h1>
+
+<div class="card-grid">
+  {% for item in library %}
+    <article class="content-card game-entry">
+      {% if item.game.cover_image %}
+        <img src="{{ item.game.cover_image }}" alt="{{ item.game.title }}" />
+      {% endif %}
+      <div>
+        <h2>
+          <a href="{% url 'perfiles:game_detail' item.game.id %}">{{ item.game.title }}</a>
+        </h2>
+        <p>{{ item.game.genre.name }}</p>
+        <small>Acquired {{ item.acquired_at|date:'d/m/Y' }}</small>
+      </div>
+    </article>
+  {% empty %}
+    <p class="empty">
+      Your library is empty. The games that you buy will appear here.
+    </p>
+  {% endfor %}
+</div>
+{% endblock %}

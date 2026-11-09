@@ -1,0 +1,45 @@
+{% extends 'perfiles/base.html' %}
+
+{% block title %}Mi perfil - GameVault{% endblock %}
+
+{% block content %}
+<section class="profile-hero">
+  {% if profile.avatar %}
+    <img
+      class="avatar"
+      src="{{ profile.avatar }}"
+      alt="Avatar de {{ user.username }}"
+    />
+  {% else %}
+    <div class="avatar placeholder">{{ user.username|first|upper }}</div>
+  {% endif %}
+
+  <div>
+    <h1>{{ user.username }}</h1>
+    <p>{{ profile.bio|default:'No bio written yet.' }}</p>
+    <div class="actions">
+      <a class="button" href="{% url 'perfiles:profile' user.username %}">Public profile</a>
+      <a class="button secondary" href="{% url 'perfiles:edit_profile' %}">Edit profile</a>
+    </div>
+  </div>
+</section>
+
+<section class="stats-grid">
+  <a class="stat" href="{% url 'perfiles:library' %}">
+    <strong>{{ library_count }}</strong>
+    <span>Acquired games</span>
+  </a>
+  <a class="stat" href="{% url 'perfiles:wishlist' %}">
+    <strong>{{ wishlist_count }}</strong>
+    <span>Wishlist games</span>
+  </a>
+  <div class="stat">
+    <strong>{{ achievement_count }}</strong>
+    <span>Achievements</span>
+  </div>
+  <div class="stat">
+    <strong>{{ achievement_points }}</strong>
+    <span>Achievement points</span>
+  </div>
+</section>
+{% endblock %}

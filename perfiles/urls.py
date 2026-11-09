@@ -1,36 +1,17 @@
 from django.urls import path
 
-from .views import (
-    GameReviewsView,
-    MyGameLibraryView,
-    PublicAchievementsView,
-    PublicProfileView,
-    ReviewDetailView,
-    WishlistItemView,
-    WishlistView,
-)
+from . import views
 
-
-app_name = 'perfiles'
+app_name = "perfiles"
 
 urlpatterns = [
-    path('perfiles/<str:username>/', PublicProfileView.as_view(), name='profile'),
-    path(
-        'perfiles/<str:username>/logros/',
-        PublicAchievementsView.as_view(),
-        name='achievements',
-    ),
-    path('biblioteca/', MyGameLibraryView.as_view(), name='library'),
-    path('wishlist/', WishlistView.as_view(), name='wishlist'),
-    path(
-        'wishlist/<int:pk>/',
-        WishlistItemView.as_view(),
-        name='wishlist-item',
-    ),
-    path(
-        'juegos/<int:game_id>/resenas/',
-        GameReviewsView.as_view(),
-        name='game-reviews',
-    ),
-    path('resenas/<int:pk>/', ReviewDetailView.as_view(), name='review-detail'),
+    path("dashboard/", views.dashboard, name="dashboard"),
+    path("editar/", views.edit_profile, name="edit_profile"),
+    path("biblioteca/", views.library, name="library"),
+    path("wishlist/", views.wishlist, name="wishlist"),
+    path("wishlist/<int:game_id>/toggle/", views.toggle_wishlist, name="toggle_wishlist"),
+    path("juegos/<int:game_id>/", views.game_detail, name="game_detail"),
+    path("juegos/<int:game_id>/resena/", views.review_game, name="review_game"),
+    path("juegos/<int:game_id>/resena/eliminar/", views.delete_review, name="delete_review"),
+    path("<str:username>/", views.public_profile, name="profile"),
 ]

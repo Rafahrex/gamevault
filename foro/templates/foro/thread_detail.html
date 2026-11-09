@@ -1,0 +1,54 @@
+{% extends 'perfiles/base.html' %}
+{% block title %}{{ thread.title }} - Foro{% endblock %}
+{% block content %}
+<nav style="font-size:13px; margin-bottom:12px;">
+  <a href="{% url 'foro:thread_list' %}" style="color:#66c0f4; text-decoration:none;">&larr; Volver al foro</a>
+</nav>
+
+<div style="background:#16202d; padding:20px; border-radius:4px; margin-bottom:20px;">
+  <h1 style="margin:0 0 6px;">{{ thread.title }}</h1>
+  <p style="color:#8f98a0; font-size:12px; margin:0 0 10px;">
+    Juego: <a href="{% url 'perfiles:game_detail' thread.game_id %}" style="color:#66c0f4;">{{ thread.game.title }}</a>
+    · {{ thread.user.username }} · {{ thread.created_at|date:"d M Y H:i" }}
+  </p>
+  <p style="margin:0;">{{ thread.content|linebreaksbr }}</p>
+  {% if user.is_authenticated and user == thread.user or user.is_staff %}
+  <form method="post" action="{% url 'foro:delete_thread' thread.id %}" class="inline-form" style="margin-top:12px;">
+    {% csrf_token %}
+    <button type="submit" style="background:none; border:none; color:#cd3d3d; cursor:pointer; font-size:12px; padding:0;">
+      Eliminar hilo
+    </button>
+  </form>
+  {% endif %}
+</div>
+
+<h2 style="font-size:16px; color:#acdbf5;">Comentarios ({{ thread.comments.count }})</h2>
+
+<form method="post" action="{% url 'foro:thread_detail' thread.id %}" style="background:#16202d; padding:16px; border-radius:4px; margin-bottom:20px;">
+  {% csrf_token %}
+  <textarea
+    name="content"
+    placeholder="Escribe tu comentario..."
+    style="width:100%; background:#0e141d; color:#c6d4df; border:1px solid #2a475e; padding:10px; border-radius:2px; min-height:70px;"
+  ></textarea>
+  <button type="submit" class="button" style="margin-top:8px;">Comentar</button>
+</form>
+
+{% if page_obj %}
+  {% for comment in page_obj %}
+    {% include 'foro/_comment.html' with comment=comment %}
+  {% endfor %}
+  <div style="display:flex; gap:10px; margin-top:16px;">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" style="color:#66c0f4;">&larr; Anterior</a>
+    {% endif %}
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" style="color:#66c0f4;">Siguiente &rarr;</a>
+    {% endif %}
+  </div>
+{% else %}
+  <div style="background:#16202d; padding:20px; border-radius:4px;">
+    <p style="color:#8f98a0;">Sin comentarios todavía. ¡Sé el primero!</p>
+  </div>
+{% endif %}
+{% endblock %}

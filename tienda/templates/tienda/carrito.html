@@ -1,0 +1,124 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameVault - Shopping Cart</title>
+    <link rel="stylesheet" href="{% static 'tienda/styles.css' %}" />
+    <style>
+      .cart-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #16202d;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 25px;
+      }
+      .cart-table th,
+      .cart-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #2a475e;
+      }
+      .cart-table th {
+        background: #0e141d;
+        color: #66c0f4;
+        text-transform: uppercase;
+        font-size: 13px;
+      }
+      .cart-summary {
+        background: #121923;
+        padding: 20px;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .btn-checkout {
+        background: linear-gradient(90deg, #75b022 0%, #588a1b 100%);
+        color: #d2efa9;
+        padding: 12px 24px;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 2px;
+      }
+      .btn-remove {
+        color: #cd3d3d;
+        text-decoration: none;
+        font-size: 13px;
+      }
+      .btn-remove:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>YOUR SHOPPING CART</h1>
+
+      {% if items %}
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>
+              <strong>{{ item.game.title }}</strong>
+            </td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.game.price }}</td>
+            <td>${{ item.get_subtotal }}</td>
+            <td>
+              <a
+                href="{% url 'eliminar_del_carrito' item.id %}"
+                class="btn-remove"
+                >Remove</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="cart-summary">
+        <div>
+          <a
+            href="{% url 'catalogo' %}"
+            style="color: #66c0f4; text-decoration: none"
+            >&larr; Continue Shopping</a
+          >
+        </div>
+        <div>
+          <span style="font-size: 18px; margin-right: 20px"
+            >Total: <strong style="color: #acdbf5">${{ total }}</strong></span
+          >
+          <a href="{% url 'procesar_checkout' %}" class="btn-checkout"
+            >Purchase for myself</a
+          >
+        </div>
+      </div>
+      {% else %}
+      <div style="background: #121923; padding: 40px; text-align: center">
+        <p style="color: #8f98a0; margin-bottom: 20px">
+          Your shopping cart is currently empty.
+        </p>
+        <a
+          href="{% url 'catalogo' %}"
+          class="btn-search"
+          style="text-decoration: none"
+          >Browse Store</a
+        >
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>

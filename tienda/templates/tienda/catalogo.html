@@ -1,0 +1,241 @@
+{% load static %} {% if messages %}
+<div class="messages-container">
+  {% for message in messages %}
+  <div
+    class="alert alert-{{ message.tags }}"
+    style="
+      padding: 12px;
+      background: #2a475e;
+      color: #66c0f4;
+      margin-bottom: 15px;
+      border-radius: 4px;
+    "
+  >
+    {{ message }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameVault - Store Catalogue</title>
+    <link rel="stylesheet" href="{% static 'tienda/styles.css' %}" />
+  </head>
+  <body>
+    <div class="container">
+      <header
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: #171a21;
+          padding: 15px 20px;
+          margin-bottom: 25px;
+          border-radius: 4px;
+        "
+      >
+        <div style="font-weight: bold; color: #66c0f4; font-size: 18px">
+          <a
+            href="{% url 'catalogo' %}"
+            style="color: #fff; text-decoration: none"
+            >GAMEVAULT</a
+          >
+        </div>
+        <div
+          style="display: flex; gap: 15px; align-items: center; font-size: 13px"
+        >
+          <a
+            href="{% url 'ver_carrito' %}"
+            class="btn-add"
+            style="text-decoration: none"
+            >Cart</a
+          >
+          <a
+            href="{% url 'foro:thread_list' %}"
+            style="color: #66c0f4; text-decoration: none"
+            >Foro</a
+          >
+          <a
+            href="{% url 'recomendaciones:recomendaciones_page' %}"
+            style="color: #66c0f4; text-decoration: none"
+            >Recomendaciones</a
+          >
+          <a
+            href="{% url 'foro:notifications' %}"
+            title="Notificaciones"
+            style="position: relative; display: inline-flex; color: #66c0f4; text-decoration: none"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            {% if unread_notifications %}
+            <span style="position: absolute; top: -6px; right: -8px; background: #cd3d3d; color: #fff; border-radius: 8px; font-size: 10px; line-height: 1; padding: 2px 5px;">{{ unread_notifications }}</span>
+            {% endif %}
+          </a>
+          {% if user.is_authenticated %}
+          <a
+            href="{% url 'historial_transacciones' %}"
+            style="color: #66c0f4; text-decoration: none"
+            >History</a
+          >
+          <a
+            href="{% url 'perfiles:dashboard' %}"
+            style="color: #acdbf5; text-decoration: none"
+          >
+            Hello, <strong>{{ user.username }}</strong>
+          </a>
+
+          <a
+            href="{% url 'logout' %}"
+            style="color: #cd3d3d; text-decoration: none"
+            >Logout</a
+          >
+          {% else %}
+          <a
+            href="{% url 'login' %}"
+            style="color: #66c0f4; text-decoration: none"
+            >Sign In</a
+          >
+          <a
+            href="{% url 'register' %}"
+            style="color: #c6d4df; text-decoration: none"
+            >Register</a
+          >
+          {% endif %}
+        </div>
+      </header>
+
+      <h1>GameVault</h1>
+
+      <div class="search-bar-container">
+        <form method="GET" action="{% url 'catalogo' %}" class="search-form">
+          <input
+            type="text"
+            name="query"
+            class="search-input"
+            placeholder="Search store..."
+            value="{{ query }}"
+          />
+          <button type="submit" class="btn-search">Search</button>
+          {% if query %}
+          <a href="{% url 'catalogo' %}" class="clear-link">Clear</a>
+          {% endif %}
+        </form>
+      </div>
+
+      <div class="store-layout">
+        <aside class="sidebar">
+          <h3>Narrow by Genre</h3>
+          <ul class="genre-list">
+            {% for g in genres %}
+            <li><a href="?genre={{ g.id }}">{{ g.name }}</a></li>
+            {% empty %}
+            <li>
+              <span style="font-size: 12px; color: #555"
+                >No genres available</span
+              >
+            </li>
+            {% endfor %}
+          </ul>
+        </aside>
+
+        <main class="games-grid">
+          {% for game in games %}
+          <div class="game-card">
+            {% if game.cover_image %}
+            <a href="{% url 'perfiles:game_detail' game.id %}">
+              <img
+                src="{{ game.cover_image }}"
+                alt="{{ game.title }}"
+                class="game-cover"
+              />
+            </a>
+            {% else %}
+            <a
+              href="{% url 'perfiles:game_detail' game.id %}"
+              style="text-decoration: none"
+            >
+              <div
+                style="
+                  height: 150px;
+                  background: #0e141d;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: #384959;
+                "
+              >
+                No Image
+              </div>
+            </a>
+            {% endif %}
+
+            <div class="game-info">
+              <h2 class="game-title">
+                <a
+                  href="{% url 'perfiles:game_detail' game.id %}"
+                  style="color: inherit; text-decoration: none"
+                  >{{ game.title }}</a
+                >
+              </h2>
+              {% if game.genre %}
+              <span class="game-genre">{{ game.genre.name }}</span>
+              {% endif %}
+            </div>
+
+            <div
+              class="card-footer"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 8px;
+              "
+            >
+              <span class="price-tag">${{ game.price }}</span>
+              <div style="display: flex; gap: 6px; align-items: center">
+                <a
+                  href="{% url 'perfiles:game_detail' game.id %}"
+                  style="
+                    color: #66c0f4;
+                    text-decoration: none;
+                    font-size: 12px;
+                    padding: 6px 10px;
+                    background: #212c3d;
+                    border-radius: 2px;
+                  "
+                  >Reviews</a
+                >
+                {% if game.stock > 0 %}
+                <a href="{% url 'agregar_al_carrito' game.id %}" class="btn-add"
+                  >Add to Cart</a
+                >
+                {% else %}
+                <span class="out-of-stock">Out of Stock</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div
+            style="
+              grid-column: 1 / -1;
+              padding: 40px;
+              text-align: center;
+              background: #121923;
+            "
+          >
+            <p style="font-size: 16px; color: #8f98a0">
+              No games found matching your search criteria.
+            </p>
+          </div>
+          {% endfor %}
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

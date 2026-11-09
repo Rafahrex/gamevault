@@ -1,0 +1,31 @@
+{% extends 'perfiles/base.html' %}
+
+{% block title %}Wishlist - GameVault{% endblock %}
+
+{% block content %}
+<h1>My Wishlist</h1>
+
+<div class="card-grid">
+  {% for item in wishlist %}
+    <article class="content-card game-entry">
+      {% if item.game.cover_image %}
+        <img src="{{ item.game.cover_image }}" alt="{{ item.game.title }}" />
+      {% endif %}
+      <div>
+        <h2>
+          <a href="{% url 'perfiles:game_detail' item.game.id %}">{{ item.game.title }}</a>
+        </h2>
+        <p>${{ item.game.price }}</p>
+        <form method="post" action="{% url 'perfiles:toggle_wishlist' item.game.id %}">
+          {% csrf_token %}
+          <button class="danger-link" type="submit">
+            Remove
+          </button>
+        </form>
+      </div>
+    </article>
+  {% empty %}
+    <p class="empty">You have not added any games to your wishlist yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

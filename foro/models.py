@@ -31,6 +31,11 @@ class Comment(models.Model):
     def __str__(self):
         return f'Comment by {self.user.username} on {self.thread.title}'
 
+    @property
+    def score(self):
+        """Puntaje del comentario: upvotes menos downvotes."""
+        return self.votes.filter(vote_type='upvote').count() - self.votes.filter(vote_type='downvote').count()
+
 
 class Vote(models.Model):
     VOTE_CHOICES = [
@@ -46,3 +51,20 @@ class Vote(models.Model):
 
     def __str__(self):
         return f'{self.user.username} {self.vote_type} on comment #{self.comment.id}'
+
+
+class Notification(models.Model):
+    """Modelo nuevo (migración 0002). Las notificaciones NO se crean en las
+    vistas: las genera el paradigma orientado a eventos (foro/signals.py)."""
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True, related_name='notifications')
+    message = models.CharField(max_length=255)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Notification for {self.user.username}: {self.message}'

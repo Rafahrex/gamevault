@@ -1,0 +1,71 @@
+{% extends 'perfiles/base.html' %}
+{% block title %}Foro - GameVault{% endblock %}
+{% block content %}
+<h1>Foro comunitario</h1>
+
+<p style="color:#8f98a0; font-size:13px;">
+  Discute sobre cada juego. Crea hilos, comenta y vota para construir la
+  comunidad.
+</p>
+
+<div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
+  <form method="GET" action="{% url 'foro:thread_list' %}" style="display:flex; gap:8px; align-items:center;">
+    <select
+      name="game"
+      onchange="this.form.submit()"
+      style="background:#0e141d; color:#acdbf5; border:1px solid #2a475e; padding:8px; border-radius:2px;"
+    >
+      <option value="">— Todos los juegos —</option>
+      {% for game in games %}
+      <option value="{{ game.id }}" {% if current_game == game.id %}selected{% endif %}>
+        {{ game.title }}
+      </option>
+      {% endfor %}
+    </select>
+    {% if current_game %}
+    <a href="{% url 'foro:thread_list' %}" style="color:#66c0f4; font-size:13px;">Limpiar</a>
+    {% endif %}
+  </form>
+  <div style="display:flex; gap:12px; align-items:center;">
+    <a href="{% url 'foro:notifications' %}" style="color:#66c0f4; text-decoration:none; font-size:13px;">
+      Notificaciones{% if unread %} ({{ unread }}){% endif %}
+    </a>
+    <a href="{% url 'foro:thread_create' %}" class="button">Crear hilo</a>
+  </div>
+</div>
+
+{% if page_obj %}
+  {% for thread in page_obj %}
+  <div style="background:#16202d; padding:16px; border-radius:4px; margin-bottom:10px;">
+    <h3 style="margin:0 0 6px;">
+      <a href="{% url 'foro:thread_detail' thread.id %}" style="color:#66c0f4; text-decoration:none;">
+        {{ thread.title }}
+      </a>
+    </h3>
+    <p style="color:#8f98a0; font-size:12px; margin:0 0 8px;">
+      {{ thread.game.title }} · {{ thread.user.username }} ·
+      {{ thread.created_at|date:"d M Y H:i" }}
+    </p>
+    <p style="font-size:13px; margin:0;">{{ thread.content|truncatechars:160 }}</p>
+    <p style="color:#8f98a0; font-size:12px; margin:8px 0 0;">
+      {{ thread.comment_count }} comentario(s)
+    </p>
+  </div>
+  {% endfor %}
+
+  <div style="display:flex; gap:10px; margin-top:16px;">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% if current_game %}&game={{ current_game }}{% endif %}"
+       style="color:#66c0f4;">&larr; Anterior</a>
+    {% endif %}
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if current_game %}&game={{ current_game }}{% endif %}"
+       style="color:#66c0f4;">Siguiente &rarr;</a>
+    {% endif %}
+  </div>
+{% else %}
+  <div style="background:#16202d; padding:20px; border-radius:4px;">
+    <p style="color:#8f98a0;">Todavía no hay hilos. ¡Crea el primero!</p>
+  </div>
+{% endif %}
+{% endblock %}

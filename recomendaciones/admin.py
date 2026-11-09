@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import UserPreference
+
+
+@admin.register(UserPreference)
+class UserPreferenceAdmin(admin.ModelAdmin):
+    list_display = ('user', 'max_price', 'updated_at')
+    filter_horizontal = ('favorite_genres',)
