@@ -1,12 +1,29 @@
 # GameVault - Setup del ambiente (Windows / PowerShell)
-# Crea el venv, instala dependencias, crea la BD si no existe y aplica migraciones.
+# Crea .env si no existe, el venv, instala dependencias, crea la BD si no existe y aplica migraciones.
 $ErrorActionPreference = 'Stop'
 
-$DB_NAME = 'gamevault'
-$DB_USER = 'postgres'
-$DB_PASSWORD = 'rafa20111'   # debe coincidir con gamevault_config/settings.py
-$DB_HOST = 'localhost'
-$DB_PORT = '5432'
+# Configuracion local: se lee de .env (nunca se sube al repositorio).
+if (-not (Test-Path .\.env)) {
+    Write-Host '==> Creando .env a partir de .env.example' -ForegroundColor Cyan
+    $dbPass = Read-Host 'Contraseña del usuario postgres'
+    $secret = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 50 | ForEach-Object { [char]$_ })
+    (Get-Content .\.env.example) `
+        -replace '^DJANGO_SECRET_KEY=.*', "DJANGO_SECRET_KEY=$secret" `
+        -replace '^DB_PASSWORD=.*', "DB_PASSWORD=$dbPass" |
+        Set-Content .\.env -Encoding UTF8
+}
+
+$cfg = @{}
+foreach ($line in Get-Content .\.env) {
+    if ($line -match '^\s*([A-Z_]+)\s*=\s*(.*)$') {
+        $cfg[$Matches[1]] = $Matches[2].Trim()
+    }
+}
+$DB_NAME = if ($cfg.DB_NAME) { $cfg.DB_NAME } else { 'gamevault' }
+$DB_USER = if ($cfg.DB_USER) { $cfg.DB_USER } else { 'postgres' }
+$DB_PASSWORD = $cfg.DB_PASSWORD
+$DB_HOST = if ($cfg.DB_HOST) { $cfg.DB_HOST } else { 'localhost' }
+$DB_PORT = if ($cfg.DB_PORT) { $cfg.DB_PORT } else { '5432' }
 
 Write-Host '==> 1/4 Entorno virtual' -ForegroundColor Cyan
 if (-not (Test-Path .\venv)) {

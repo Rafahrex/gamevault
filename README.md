@@ -1,116 +1,132 @@
 # GameVault
 
-Plataforma web de videojuegos tipo Steam construida con Django (MTV) y plantillas
-Django del lado del servidor. Proyecto académico del curso **SC-250 Paradigmas de
-Programación**: cada módulo evidencia un paradigma distinto con código real.
+> [Versión en español](README.es.md)
 
-## Módulos y paradigmas
+A Steam-style video game web platform built with Django (MTV) and server-rendered
+Django templates. Academic project for the **SC-250 Programming Paradigms** course
+at Universidad Fidélitas: each module demonstrates a different programming paradigm
+with working code.
 
-| Módulo | Funcionalidad | Paradigma evidenciado |
+**Stack:** Python, Django 6, Django REST Framework, PostgreSQL
+
+## Modules and paradigms
+
+| Module | Features | Paradigm |
 |---|---|---|
-| `tienda` | Catálogo, búsqueda por género, carrito, checkout, historial de transacciones, autenticación (login/register/logout) | MVC/MTV clásico |
-| `perfiles` | Dashboard, biblioteca, wishlist, reseñas, logros, perfil público | Orientado a objetos |
-| `foro` | Hilos por juego, comentarios anidados con paginación, votos, notificaciones automáticas | **Orientado a eventos** (Django Signals) |
-| `recomendaciones` | Pipeline de recomendaciones personalizadas + edición de preferencias desde el cliente | **Funcional + declarativo (ORM)** |
+| `tienda` (store) | Catalog, search by genre, cart, checkout, purchase history, authentication (login/register/logout) | Classic MVC/MTV |
+| `perfiles` (profiles) | Dashboard, game library, wishlist, reviews, achievements, public profile | Object-oriented |
+| `foro` (forum) | Threads per game, nested comments with pagination, votes, automatic notifications | **Event-driven** (Django Signals) |
+| `recomendaciones` (recommendations) | Personalized recommendation pipeline + user-editable preferences | **Functional + declarative (ORM)** |
 
-## Requisitos
+## Requirements
 
-- Python 3.10+ (desarrollado con Python 3.14)
+- Python 3.10+
 - PostgreSQL 18+
 - pip
 
-## Instalación (Windows / PowerShell)
+## Setup (Windows / PowerShell)
 
 ```powershell
-git clone <repo-url>
+git clone https://github.com/Rafahrex/gamevault.git
 cd gamevault
 
-# 1. Entorno virtual
+# 1. Virtual environment
 python -m venv venv
 venv\Scripts\activate
 
-# 2. Dependencias
+# 2. Dependencies
 pip install -r requirements.txt
 
-# 3. Base de datos en PostgreSQL (el proyecto usa la BD "gamevault")
+# 3. PostgreSQL database
 psql -U postgres -c "CREATE DATABASE gamevault;"
 
-# 4. Credenciales: ajusta gamevault_config/settings.py -> DATABASES
-#    (actualmente: NAME=gamevault, USER=postgres, PASSWORD=rafa20111,
-#     HOST=localhost, PORT=5432)
+# 4. Local configuration: copy .env.example to .env and fill in your values
+#    (DJANGO_SECRET_KEY, DB_PASSWORD, ...). .env is never committed.
+copy .env.example .env
 
-# 5. Migraciones (incluye las de foro y recomendaciones)
+# 5. Migrations
 python manage.py migrate
 
-# 6. Datos demo (opcional pero recomendado): 18 juegos en 9 géneros
+# 6. Demo data (optional, recommended): 18 games across 9 genres
 python manage.py seed_demo_data
 
-# 7. Superusuario (opcional)
+# 7. Superuser (optional)
 python manage.py createsuperuser
 
-# 8. Servidor de desarrollo
+# 8. Development server
 python manage.py runserver
 ```
 
-> **Setup automático:** también puedes ejecutar `.\setup.ps1`, que crea el venv,
-> instala las dependencias, crea la base de datos si no existe y corre las
-> migraciones.
+> **Automatic setup:** you can also run `.\setup.ps1`. It creates `.env`, the
+> virtual environment, installs dependencies, creates the database if needed and
+> runs the migrations.
 
-## Rutas principales
+## Configuration
 
-| Ruta | Descripción |
+All secrets and machine-specific settings are read from environment variables
+(loaded from `.env` with `python-dotenv`). See `.env.example`:
+
+| Variable | Purpose |
 |---|---|
-| `/` | Catálogo de la tienda |
-| `/cart/`, `/checkout/`, `/historial/` | Carrito, compra y historial |
-| `/login/`, `/register/`, `/logout/` | Autenticación |
-| `/perfiles/` | Dashboard del usuario |
-| `/perfiles/biblioteca/`, `/perfiles/wishlist/` | Biblioteca y wishlist |
-| `/perfiles/<username>/` | Perfil público |
-| `/foro/` | Lista de hilos (filtrables por juego) |
-| `/foro/hilo/<id>/` | Hilo con comentarios anidados y votos |
-| `/foro/nuevo/`, `/foro/notificaciones/` | Crear hilo y notificaciones |
-| `/recomendaciones/` | Recomendaciones y edición de preferencias del usuario |
-| `/recomendaciones/preferencias/` | Guarda géneros favoritos y precio máximo (POST) |
-| `/recomendaciones/api/` | Endpoint REST (DRF) |
+| `DJANGO_DEBUG` | `True` for local development; defaults to `False` |
+| `DJANGO_SECRET_KEY` | Required when `DJANGO_DEBUG` is off |
+| `DJANGO_ALLOWED_HOSTS` | Comma-separated host list |
+| `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` | PostgreSQL connection |
 
-### Endpoint REST
+## Main routes
 
-`GET /recomendaciones/api/` — requiere autenticación. Devuelve el top-N de
-juegos recomendados en JSON con su `affinity_score`, ordenados por afinidad.
+| Route | Description |
+|---|---|
+| `/` | Store catalog |
+| `/cart/`, `/checkout/`, `/historial/` | Cart, checkout and purchase history |
+| `/login/`, `/register/`, `/logout/` | Authentication |
+| `/perfiles/` | User dashboard |
+| `/perfiles/biblioteca/`, `/perfiles/wishlist/` | Library and wishlist |
+| `/perfiles/<username>/` | Public profile |
+| `/foro/` | Thread list (filterable by game) |
+| `/foro/hilo/<id>/` | Thread with nested comments and votes |
+| `/foro/nuevo/`, `/foro/notificaciones/` | New thread and notifications |
+| `/recomendaciones/` | Recommendations and preference editing |
+| `/recomendaciones/preferencias/` | Saves favorite genres and max price (POST) |
+| `/recomendaciones/api/` | REST endpoint (DRF) |
 
-## Experiencia de usuario (preferencias)
+### REST endpoint
 
-En `/recomendaciones/` cada usuario autenticado puede **personalizar sus gustos**
-desde el cliente: marcar sus géneros favoritos y definir un precio máximo. El
-formulario (`recomendaciones/forms.py`) guarda esos datos y el pipeline funcional
-recalcula las recomendaciones al instante.
+`GET /recomendaciones/api/` requires authentication. It returns the top-N
+recommended games as JSON with their `affinity_score`, sorted by affinity.
 
-## Cómo se evidencian los paradigmas
+## How each paradigm is implemented
 
-- **Foro (eventos):** `foro/signals.py` centraliza `post_save` (notificar al
-  autor del hilo al crear un comentario), `pre_delete` (limpiar notificaciones
-  al eliminar contenido) y la señal personalizada `comment_voted`. Los modelos
-  emiten eventos que otros componentes escuchan sin acoplarse. Cada receptor
-  tiene un comentario explicando qué evento dispara y por qué es EDA.
-- **Recomendaciones (funcional):** `recomendaciones/pipeline.py` es un pipeline
-  de funciones puras — `filter_by_preferences()` con `filter()`,
-  `score_by_affinity()` con `map()`, `order_by_score()` con `sorted()`,
-  `take_top_n()` con slicing — compuesto con `reduce()`. Las consultas usan el
-  ORM de forma declarativa (`queryset.filter(...)` expresa QUÉ se necesita).
+- **Forum (event-driven):** `foro/signals.py` centralizes the `post_save`
+  receiver (notify a thread's author when someone comments), `pre_delete`
+  receivers (clean up notifications when content is deleted) and the custom
+  `comment_voted` signal. Models emit events that other components handle
+  without being coupled to them.
+- **Recommendations (functional):** `recomendaciones/pipeline.py` is a pipeline
+  of pure functions: `filter_by_preferences()` with `filter()`,
+  `score_by_affinity()` with `map()`, `order_by_score()` with `sorted()` and
+  `take_top_n()` with slicing, composed with `reduce()`. Queries use the ORM
+  declaratively.
 
 ## Tests
 
 ```powershell
-python manage.py test
+python manage.py test --settings=gamevault_config.test_settings
 ```
 
-Los tests crean una base temporal y verifican señales del foro, vistas
-end-to-end, pureza/orden del pipeline, el endpoint REST y el flujo de
-preferencias desde el cliente (29 tests).
+`test_settings` uses SQLite, so no PostgreSQL server is needed. The 29 tests
+cover the forum signals, end-to-end views, the purity and ordering of the
+recommendation pipeline, the REST endpoint and the preferences flow.
 
-## Limitaciones conocidas
+## Known limitations
 
-- **Carrito de visitantes anónimos:** agregar un juego al carrito sin iniciar
-  sesión lanza `IntegrityError: NOT NULL constraint failed: tienda_cart.user_id`
-  (`tienda/views.py`). El flujo asume un carrito por usuario autenticado; por
-  ahora se debe iniciar sesión antes de usar el carrito.
+- **Anonymous cart:** adding a game to the cart without logging in raises
+  `IntegrityError: NOT NULL constraint failed: tienda_cart.user_id`
+  (`tienda/views.py`). The flow assumes one cart per authenticated user, so log
+  in before using the cart.
+
+## Team
+
+Academic team project. Initial architecture, data models, forum and
+recommendations modules by [Rafael Brenes](https://github.com/Rafahrex);
+store and profiles modules by the other team members.
